@@ -1,0 +1,112 @@
+@font-face {
+	font-family: "Draw";
+	src: url("./Fonts/Lazy Monday.otf") format("opentype");
+}
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+:root {
+	font-size: 16px;
+}
+body {
+	font-family: "Draw";
+	background-color: #eeeeee;
+}
+header {
+	background-color: #161616;
+	color: #eeeeee;
+	padding: 20px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+.page-header-title h1 {
+	display: flex;
+	align-items: center;
+	column-gap: 20px;
+}
+header h1 {
+	display: inline-block;
+	font-size: clamp(4rem, 10vw, 7rem);
+}
+header svg {
+	width: clamp(4rem, 10vw, 7rem);
+	height: clamp(4rem, 10vw, 7rem);
+}
+
+.page-header-nav-button {
+	width: clamp(4rem, 10vw, 7rem);
+	height: clamp(4rem, 10vw, 7rem);
+	display: flex;
+	background-color: transparent;
+	flex-direction: column;
+	align-items: stretch;
+	justify-content: space-around;
+}
+.page-header-nav-button,
+header h1,
+header svg {
+	transition: scale 300ms;
+}
+.page-header-nav-button:hover,
+header h1:hover,
+header svg:hover {
+	scale: 1.1;
+    cursor: pointer;
+}
+
+.page-header-nav-button .bar {
+	background-color: #eeeeee;
+	height: 20%; /* Set the height to 25% of the parent's height */
+	border-radius: 100vw;
+	box-shadow: 1px 1px 1px #666666;
+}
+/* ------ */
+/* NAV Content */
+.nav-content {
+	overflow-y: hidden;
+	background-color: #acacac;
+	color: #161616;
+}
+.nav-content[aria-expanded="false"] {
+	max-height: 0;
+	transition: max-height 1000ms;
+}
+.nav-content[aria-expanded="true"] {
+	transition: max-height 2000ms;
+	max-height: 700px;
+}
+
+.navbar {
+	padding: 20px;
+}
+.navbar ul {
+	list-style: none;
+}
+.navbar > ul {
+	padding-left: 0;
+}
+.navbar > ul > li > ul > li,
+.navbar > ul > li > span {
+	padding-left: 20px;
+}
+.nav-link-click {
+	display: inline-flex;
+	column-gap: 10px;
+	align-items: center;
+	transition: scale 300ms;
+}
+.navbar h3 {
+	font-size: 2rem;
+    padding: 10px 0;
+}
+.nav-link-click span {
+	font-size: 1.5rem;
+}
+.nav-link-click:hover {
+	scale: 1.1;
+    cursor: pointer;
+    color: #3a3a3a;
+}

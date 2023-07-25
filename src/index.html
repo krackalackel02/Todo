@@ -4,8 +4,29 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Document</title>
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,700,1,200"
+		/>
 	</head>
 	<body>
-		Hello
+		<header class="page-header">
+			<span class="page-header-title">
+				<h1>
+					<svg>
+						<use xlink:href="./Images/symbol.svg#title"></use>
+					</svg>
+					myTodos
+				</h1>
+			</span>
+			<div class="page-header-nav-button">
+				<div class="bar"></div>
+				<div class="bar"></div>
+				<div class="bar"></div>
+			</div>
+		</header>
+		<div class="nav-content" aria-expanded="true"></div>
+		<div class="main-content"></div>
+		<footer id="page-footer"></footer>
 	</body>
 </html>

@@ -2,26 +2,26 @@
   "name": "todo",
   "version": "1.0.0",
   "description": "\"# Todo\"",
-	"private": true,
-	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1",
-		"build": "webpack --watch",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --watch",
     "publish": "git subtree push --prefix dist origin gh-pages",
-	"commit": "git add . && git commit",
-	"push": "git push"
-	},
-	"keywords": [],
-	"author": "",
-	"license": "ISC",
-	"devDependencies": {
-		"css-loader": "^6.8.1",
-		"html-webpack-plugin": "^5.5.3",
-		"sass": "^1.64.0",
-		"sass-loader": "^12.1.0",
-		"style-loader": "^3.3.3",
-		"webpack": "^5.88.2",
-		"webpack-cli": "^5.1.4"
-	},
-	"dependencies": {
-	}
+    "commit": "git add . && git commit",
+    "push": "git push"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "css-loader": "^6.8.1",
+    "html-loader": "^4.2.0",
+    "html-webpack-inline-svg-plugin": "^2.3.0",
+    "html-webpack-plugin": "^5.5.3",
+    "sass": "^1.64.0",
+    "sass-loader": "^12.1.0",
+    "style-loader": "^3.3.3",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4"
+  }
 }

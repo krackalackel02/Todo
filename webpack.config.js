@@ -1,12 +1,10 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const HtmlWebpackInlineSVGPlugin = require("html-webpack-inline-svg-plugin");
 
 module.exports = {
 	entry: {
-		bundle: [
-			"./src/index.js",
-			"./src/styles.css",
-		], // Use a single entry point that includes both JS and SCSS
+		bundle: ["./src/navbar.js","./src/index.js", "./src/styles.css"], // Use a single entry point that includes both JS and SCSS
 	},
 	output: {
 		path: path.resolve(__dirname, "dist"),
@@ -17,6 +15,9 @@ module.exports = {
 		new HtmlWebpackPlugin({
 			template: path.resolve(__dirname, "src/index.html"),
 			filename: "index.html",
+		}),
+		new HtmlWebpackInlineSVGPlugin({
+			runPreEmit: true,
 		}),
 	],
 	module: {
@@ -32,6 +33,10 @@ module.exports = {
 			{
 				test: /\.(woff|woff2|eot|ttf|otf)$/i,
 				type: "asset/resource",
+			},
+			{
+				test: /\.html$/i,
+				loader: "html-loader",
 			},
 		],
 	},
