@@ -4,7 +4,7 @@ const HtmlWebpackInlineSVGPlugin = require("html-webpack-inline-svg-plugin");
 
 module.exports = {
 	entry: {
-		bundle: ["./src/navbar.js","./src/index.js", "./src/styles.css"], // Use a single entry point that includes both JS and SCSS
+		bundle: ["./src/index.js", "./src/styles.css"], // Use a single entry point that includes both JS and SCSS
 	},
 	output: {
 		path: path.resolve(__dirname, "dist"),

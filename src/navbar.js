@@ -64,4 +64,4 @@ element.innerHTML = `
 					</li>
 				</ul>
 `;
-export default element;
+export default ()=>element;

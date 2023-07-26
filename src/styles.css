@@ -67,8 +67,6 @@ header svg:hover {
 	border-radius: 100vw;
 	box-shadow: 1px 1px 1px #666666;
 }
-.page-header-nav-button.rotated {
-}
 /* ------ */
 /* NAV Content */
 .nav-content {
@@ -119,8 +117,10 @@ header svg:hover {
 }
 .content-header,
 .content-list-add-item-text,
-.content-list-item-symbol {
+.content-list-item-symbol,
+.content-list-item-date {
 	display: inline-flex;
+	flex-wrap: wrap; /*solution for now*/
 	column-gap: 10px;
 	align-items: center;
 }
@@ -128,26 +128,73 @@ header svg:hover {
 	font-size: 3rem;
 }
 .content-list-item {
-	font-size: 1.5rem!important;
+	font-size: 1.5rem !important;
 	display: flex;
 	justify-content: space-between;
 }
 .content-list-add-item {
-	font-size: 1.5rem;
-	display: inline-flex;
+	display: flex;
 	align-items: center;
-	justify-content: start;
+	justify-content: center;
+}
+.content-list-add-item-text *,
+.content-list-add-item button {
+	font-size: 1.5rem;
 }
 .list-item-date {
 	font-size: 1.2rem;
 }
-.content-list >li{
+.content-list > li {
 	padding-left: 20px;
 }
 .main .material-symbols-outlined {
 	font-size: inherit;
 }
+.content-list-item-details {
+	color: rgb(80, 80, 80);
+	font-size: 1.1rem;
+}
+.priority {
+	padding-right: 10px;
+}
+.priority::after {
+	padding: 5px;
+	border-radius: 5px;
+}
+.priority[priority="high"]::after {
+	background-color: red;
+	content: "HIGH!!!";
+}
+.priority[priority="medium"]::after {
+	background-color: rgb(255, 115, 0);
+	content: "MEDIUM!!";
+}
+.priority[priority="low"]::after {
+	background-color: rgb(246, 255, 0);
+	content: "LOW!";
+}
+.material-symbols-outlined.content-list-item-marker.remove-task {
+	opacity: 0;
+}
+.content-list-item input:hover,
+.content-list-add-item button:hover,
+.material-symbols-outlined.content-list-item-marker:hover {
+	cursor: pointer;
+	scale: 1.05;
+	transition: scale 300ms;
+}
+.content-list > * {
+	border-radius: 5px;
+	padding: 10px;
+}
 
+.content-list-item:hover {
+	background-color: #a1a1a1;
+}
+.content-list-item:hover
+	.material-symbols-outlined.content-list-item-marker.remove-task {
+	opacity: 1;
+}
 
 /* FOOTER */
 
