@@ -1,31 +1,22 @@
-import { compareAsc, parseISO } from "date-fns";
+import {format, compareAsc, parseISO } from "date-fns";
 import { v4 as uid } from "uuid";
 
-class project {
-	constructor(...todos) {
-		this.list = todos;
+class Project {
+	constructor({name,symbol,},...todos) {
+        this.name = name
+        this.symbol = symbol
+		this.list = [];
 		for (const todo of todos) {
-			todo.createDate = new Date(); 
+			this.add(todo);
 		}
 	}
 
 	add(...todos) {
-		for (const todo of todos) {
-			todo.createDate = new Date(); 
-			this.list.push(todo);
+		for (const todoData of todos) {
+			const newTodo = new this.Todo(todoData);
+			newTodo.createDate = new Date();
+			this.list.push(newTodo);
 		}
-	}
-
-	static dueDateSort(a, b) {
-		return compareAsc(parseISO(a.due), parseISO(b.due));
-	}
-
-	static alphaSort(a, b) {
-		return a.title.localeCompare(b.title);
-	}
-
-	static createDateSort(a, b) {
-		return a.createDate.getTime() - b.createDate.getTime();
 	}
 
 	sortByCriteria(...criteriaFunctions) {
@@ -40,77 +31,89 @@ class project {
 		});
 	}
 
+	static dueDateSort(a, b) {
+		return compareAsc(parseISO(a.due), parseISO(b.due));
+	}
+
+	static alphaSort(a, b) {
+		return a.title.localeCompare(b.title);
+	}
+
+	static createDateSort(a, b) {
+		return a.createDate.getTime() - b.createDate.getTime();
+	}
+
 	get sortCreateDate() {
-		return this.sortByCriteria(project.createDateSort);
+		return this.sortByCriteria(Project.createDateSort);
 	}
 
 	get sortAlpha() {
-		return this.sortByCriteria(project.alphaSort, project.dueDateSort, project.createDateSort);
+		return this.sortByCriteria(
+			Project.alphaSort,
+			Project.dueDateSort,
+			Project.createDateSort
+		);
 	}
 
 	get sortDueDate() {
-		return this.sortByCriteria(project.dueDateSort, project.alphaSort, project.createDateSort);
-	}
-}
-
-class todo {
-	constructor({ title, details, due, priority }) {
-		Object.assign(this, {
-			title,
-			details,
-			due,
-			id: uid(),
-			priority,
-            isDone:false
-		});
+		return this.sortByCriteria(
+			Project.dueDateSort,
+			Project.alphaSort,
+			Project.createDateSort
+		);
 	}
 
-	get snippet() {
-		let length = 25;
-		if (this.details.length <= length) {
-			return "\""+this.details+"\"";
-		} else {
-            return "\""+this.details.substring(0, length) + "..."+"\"";
+	Todo = class {
+		constructor({ title, details, due, priority }) {
+			Object.assign(this, {
+				title,
+				details,
+				due,
+				id: uid(),
+				priority,
+				isDone: false,
+			});
 		}
-	}
-    complete(){
-        this.isDone=true
-    }
+
+		get snippet() {
+			let length = 25;
+			if (this.details.length <= length) {
+				return `"${this.details}"`;
+			} else {
+				return `"${this.details.substring(0, length)}..."`;
+			}
+		}
+
+		complete() {
+			this.isDone = true;
+		}
+	};
 }
 
-const todo1 = new todo({
-	title: "Buy groceries",
-	details: "Get milk, eggs, and bread",
-	due: "2023-07-30",
+const today = format(new Date(), "yyyy-MM-dd");
+const inbox = new Project({name:"Inbox",symbol:"inbox"},{
+	title: "Example Task",
+	details: "details",
+	due: today,
 	priority: "high",
 });
-
-const todo2 = new todo({
-	title: "Finish homework",
-	details: "Complete math and science assignments",
-	due: "2023-08-02",
+inbox.add({
+    title: "Example Task2",
+	details: "details2",
+	due: today,
 	priority: "medium",
-});
-
-const todo3 = new todo({
-	title: "Walk the dog",
-	details: "Take the dog for a walk in the park",
-	due: "2023-07-27",
+},{
+    title: "Example Task3",
+	details: "details3",
+	due: today,
 	priority: "low",
-});
+}
+)
 
-const todo4 = new todo({
-	title: "Walk the dog",
-	details: "Take the dog for a walk in the park",
-	due: "2023-07-28",
-	priority: "low",
-});
-
-let inbox = new project();
-console.log(inbox);
-
-inbox.add(todo3, todo2, todo1, todo4);
 console.log(inbox.sortAlpha);
 console.log(inbox.sortDueDate);
 console.log(inbox.sortCreateDate);
 console.log(inbox.list[0].snippet);
+
+export default inbox;
+export { Project };
