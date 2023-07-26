@@ -6,6 +6,7 @@
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
+	font-family: "Draw";
 }
 :root {
 	font-size: 16px;
@@ -48,20 +49,25 @@ header svg {
 .page-header-nav-button,
 header h1,
 header svg {
-	transition: scale 300ms;
+	transition: transform 300ms;
 }
 .page-header-nav-button:hover,
 header h1:hover,
 header svg:hover {
-	scale: 1.1;
-    cursor: pointer;
+	transform: scale(1.1);
+	cursor: pointer;
 }
-
+.page-header-nav-button.rotated {
+	transition-delay: 300ms;
+	transform: rotateZ(0.25turn);
+}
 .page-header-nav-button .bar {
 	background-color: #eeeeee;
 	height: 20%; /* Set the height to 25% of the parent's height */
 	border-radius: 100vw;
 	box-shadow: 1px 1px 1px #666666;
+}
+.page-header-nav-button.rotated {
 }
 /* ------ */
 /* NAV Content */
@@ -79,7 +85,8 @@ header svg:hover {
 	max-height: 700px;
 }
 
-.navbar {
+.navbar,
+.main {
 	padding: 20px;
 }
 .navbar ul {
@@ -100,13 +107,68 @@ header svg:hover {
 }
 .navbar h3 {
 	font-size: 2rem;
-    padding: 10px 0;
+	padding: 10px 0;
 }
 .nav-link-click span {
 	font-size: 1.5rem;
 }
 .nav-link-click:hover {
 	scale: 1.1;
-    cursor: pointer;
-    color: #3a3a3a;
+	cursor: pointer;
+	color: #3a3a3a;
+}
+.content-header,
+.content-list-add-item-text,
+.content-list-item-symbol {
+	display: inline-flex;
+	column-gap: 10px;
+	align-items: center;
+}
+.content-header {
+	font-size: 3rem;
+}
+.content-list-item {
+	font-size: 1.5rem;
+	display: flex;
+	justify-content: space-between;
+}
+.content-list-add-item {
+	font-size: 1.5rem;
+	display: inline-flex;
+	align-items: center;
+	justify-content: start;
+}
+.content-list >li{
+	padding-left: 20px;
+}
+.main .material-symbols-outlined {
+	font-size: inherit;
+}
+
+/* FOOTER */
+
+#page-footer {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	background-color: #161616;
+	color: #eeeeee;
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+	gap: 10px;
+	width: 100%;
+	padding: 10px;
+	font-size: 20px;
+	text-align: center;
+}
+
+.fa-github {
+	color: #eeeeee;
+	font-size: 40px;
+	transition: transform 0.3s ease-in-out;
+}
+
+.fa-github:hover {
+	transform: rotate(360deg) scale(1.2);
 }
