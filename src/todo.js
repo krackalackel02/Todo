@@ -1,15 +1,26 @@
-import {format, compareAsc, parseISO } from "date-fns";
+import {
+	format,
+	compareAsc,
+	parseISO,
+	setHours,
+	add,
+	endOfMonth,
+	endOfWeek,
+} from "date-fns";
 import { v4 as uid } from "uuid";
 
 class Project {
-	constructor({name,symbol,},...todos) {
-        this.name = name
-        this.symbol = symbol
-		this.list = [];
-		for (const todo of todos) {
-			this.add(todo);
-		}
-	}
+	constructor({ name, symbol, renderButton = true }, ...todos) {
+        this.name = name;
+        this.symbol = symbol;
+        this.renderButton = renderButton;
+        this.id = uid();
+        this.list = [];
+        for (const todo of todos) {
+            this.add(todo);
+        }
+    }
+    
 
 	add(...todos) {
 		for (const todoData of todos) {
@@ -62,6 +73,58 @@ class Project {
 			Project.createDateSort
 		);
 	}
+	static tonight = () => {
+		const currentDate = setHours(new Date(), 0);
+		currentDate.setMinutes(0);
+		currentDate.setSeconds(0);
+		return currentDate;
+	};
+
+	get dueToday() {
+		let currentDate = Project.tonight();
+
+		return new Project(
+			{
+				name: this.name ,
+				symbol: this.symbol,
+				renderButton: true,
+			},
+			...this.list.filter((todo) => {
+				return parseISO(todo.due).getTime() < currentDate.getTime();
+			})
+		);
+	}
+
+	get dueThisWeek() {
+		let currentDate = Project.tonight();
+		currentDate = add(currentDate, { days: 8 });
+		return new Project(
+			{
+				name: this.name ,
+				symbol: this.symbol,
+				renderButton: true,
+			},
+			...this.list.filter((todo) => {
+				return parseISO(todo.due).getTime() < currentDate.getTime();
+			})
+		);
+	}
+
+	get dueThisMonth() {
+		let currentDate = Project.tonight();
+		currentDate = add(endOfMonth(currentDate), { days: 1 });
+
+		return new Project(
+			{
+				name: this.name ,
+				symbol: this.symbol,
+				renderButton: true,
+			},
+			...this.list.filter((todo) => {
+				return parseISO(todo.due).getTime() < currentDate.getTime();
+			})
+		);
+	}
 
 	Todo = class {
 		constructor({ title, details, due, priority }) {
@@ -91,29 +154,35 @@ class Project {
 }
 
 const today = format(new Date(), "yyyy-MM-dd");
-const inbox = new Project({name:"Inbox",symbol:"inbox"},{
-	title: "Example Task",
-	details: "details",
-	due: today,
-	priority: "high",
-});
-inbox.add({
-    title: "Example Task2",
-	details: "details2",
-	due: today,
-	priority: "medium",
-},{
-    title: "Example Task3",
-	details: "details3",
-	due: today,
-	priority: "low",
-}
-)
+const randomdate = format(add(new Date(), { days: 5 }), "yyyy-MM-dd");
+const randomdate2 = format(add(new Date(), { days: 10 }), "yyyy-MM-dd");
+const inbox = new Project(
+	{ name: "Inbox", symbol: "inbox" },
+	{
+		title: "Example Task",
+		details: "details",
+		due: today,
+		priority: "high",
+	}
+);
+inbox.add(
+	{
+		title: "Example Task2",
+		details: "details2",
+		due: randomdate,
+		priority: "medium",
+	},
+	{
+		title: "Example Task3",
+		details: "details3",
+		due: randomdate2,
+		priority: "low",
+	}
+);
 
 console.log(inbox.sortAlpha);
 console.log(inbox.sortDueDate);
 console.log(inbox.sortCreateDate);
 console.log(inbox.list[0].snippet);
-
 export default inbox;
 export { Project };

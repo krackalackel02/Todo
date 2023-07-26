@@ -1,6 +1,6 @@
+import inbox from "./todo";
 import Inbox, { Project } from "./todo";
-import {format, compareAsc, parseISO } from "date-fns";
-
+import { format, compareAsc, parseISO, setHours, add } from "date-fns";
 let content = document.createElement("div");
 content.classList.add("main");
 
@@ -29,9 +29,22 @@ Test1.add(
 	}
 );
 
-let projects = [Inbox, Test1];
-for (const project of projects) {
+let listprojects = [Inbox];
+let newprojects = [];
+let isDue
+for (const project of listprojects) {
+	newprojects.push(project.dueThisWeek);
+	isDue = "Due This Week"
+}
+let mainTitle = document.createElement("h1")
+mainTitle.style.textAlign = "center"
+isDue?mainTitle.innerText = isDue:mainTitle.innerText = "" 
+content.appendChild(mainTitle)
+let projects = {list:newprojects};
+// projects = [Inbox, Test1, inbox.dueToday, Inbox.dueThisMonth];
+for (const project of projects.list) {
 	let projectTemplate = document.createElement("div");
+	projectTemplate.id = project.id;
 	let projectHeader = document.createElement("h1");
 	projectHeader.innerHTML = `
 	<span class="content-header">
@@ -67,51 +80,15 @@ for (const project of projects) {
 	li.classList.add("content-list-add-item");
 	li.innerHTML = `
 	<button>
-	<span class="content-list-add-item-text">
-	<span class="material-symbols-outlined"> add_box </span><span>Add Task</span>
-	</span>
+		<span class="content-list-add-item-text">
+			<span class="material-symbols-outlined"> add_box </span><span>Add Task</span>
+		</span>
 	</button>
-	`;
-	projectList.appendChild(li);
+`;
+
+	project.renderButton ? projectList.appendChild(li) : null;
+
 	projectTemplate.appendChild(projectList);
 	content.appendChild(projectTemplate);
 }
 export default () => content;
-
-// // Create the first project element
-// let project1 = document.createElement("div");
-// project1.innerHTML = `
-// <h1>
-// 	<span class="content-header">
-// 		<span class="material-symbols-outlined"> inbox </span><span>Inbox</span>
-// 	</span>
-// </h1>
-// <ul class="content-list">
-// 	<li class="content-list-item">
-// 		<span class="content-list-item-symbol">
-// 			<span class="material-symbols-outlined content-list-item-marker"> check_box_outline_blank </span><span
-// 				class="content-list-item-title">Example Task</span>
-// 				<span class="content-list-item-details"> "details"</span>
-// 		</span>
-// 		<span class="content-list-item-symbol">
-// 			<span class = "priority" priority = "high"></span>
-// 			<span class="content-list-item-date">Due:<input class="list-item-date" type="date" /></span>
-// 			<span class="material-symbols-outlined content-list-item-marker remove-task"> delete </span>
-// 		</span>
-// 	</li>
-// 	<li class="content-list-add-item">
-// 		<button>
-// 			<span class="content-list-add-item-text">
-// 				<span class="material-symbols-outlined"> add_box </span><span>Add Task</span>
-// 			</span>
-// 		</button>
-// 	</li>
-// </ul>
-// `;
-
-// let project2 = project1.cloneNode(true);
-
-// content.appendChild(project1);
-// content.appendChild(project2);
-
-// export default () => content;
