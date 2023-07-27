@@ -138,6 +138,11 @@ header svg:hover {
 	align-items: center;
 	justify-content: center;
 }
+.content-list-add-item.delete-save-button {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
 .content-list-add-item button {
 	font-size: 1.5rem;
 	padding:5px 10px;
@@ -197,6 +202,11 @@ header svg:hover {
 .content-list-item:hover
 	.material-symbols-outlined.content-list-item-marker.remove-task {
 	opacity: 1;
+}
+.main-title{
+	text-align: center;
+	text-decoration: underline;
+	font-size: 3rem;
 }
 
 /* FOOTER */
