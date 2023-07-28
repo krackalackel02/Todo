@@ -2,14 +2,23 @@ import { Inbox, Project, Test1 } from "./todo";
 import { format, compareAsc, parseISO, setHours, add } from "date-fns";
 export function getListProjects() {
 	let storedList = JSON.parse(localStorage.getItem("projects"));
-	// return storedList ? storedList : [Inbox, Test1];
-	return [Inbox, Test1];
+	if (!storedList) return [Inbox, Test1];
+	let newCopy = [];
+	storedList.forEach(({ id, isDefault, name, renderButton, symbol, list }) => {
+		newCopy.push(
+			new Project({ id, isDefault, name, renderButton, symbol }, ...list)
+		);
+	});
+	return newCopy;
 }
 
-export function saveListProjects(listprojects) {
+export function saveListProjects() {
+	let listprojects = getListProjects();
 	localStorage.setItem("projects", JSON.stringify(listprojects));
 }
-function clearProjects() {
+
+export function clearProjects() {
+	console.log("hello");
 	localStorage.removeItem("projects");
 }
 var exportedContent = ({ id, when }) => {
@@ -20,26 +29,40 @@ var exportedContent = ({ id, when }) => {
 	buttons.classList.add("content-list-add-item");
 	buttons.classList.add("delete-save-button");
 	buttons.innerHTML = `
-		<button id="deleteButton" onclick="${clearProjects()}">
+		<button id="deleteButton" >
 			<span class="content-list-add-item-text">
 				<span class="material-symbols-outlined"> delete </span
 				><span>Clear Projects</span>
 			</span>
 		</button>
-		<button id="saveButton" onclick="${saveListProjects(listprojects)}">
+		<button id="saveButton" >
 			<span class="content-list-add-item-text">
 				<span class="material-symbols-outlined"> save </span
 				><span>Save Projects</span>
 			</span>
 		</button>
-`;
+	`;
+	buttons.addEventListener("click", (e) => {
+		let activeButton = e.target.closest("button");
+		if (!activeButton) return;
+		switch (activeButton.id) {
+			case "deleteButton":
+				clearProjects();
+				break;
+			case "saveButton":
+				saveListProjects();
+				break;
+			default:
+				break;
+		}
+	});
 	content.appendChild(buttons);
 
-	// saveListProjects(listprojects);
 	let isDue;
 	function projectDue(time) {
 		let newprojects = [];
 		for (const project of listprojects) {
+			console.log(project);
 			switch (time) {
 				case "today":
 					newprojects.push(project.dueToday);
@@ -111,9 +134,9 @@ var exportedContent = ({ id, when }) => {
 		: (mainTitle.innerHTML = ``);
 	content.appendChild(mainTitle);
 	let projects = { list: newprojects };
-	// projects = [Inbox, Test1, inbox.dueToday, Inbox.dueThisMonth];
 	for (const project of projects.list) {
 		let projectTemplate = document.createElement("div");
+		projectTemplate.classList.add("project-card");
 		projectTemplate.id = project.id;
 		let projectHeader = document.createElement("h1");
 		projectHeader.innerHTML = `
@@ -131,7 +154,9 @@ var exportedContent = ({ id, when }) => {
 			li.id = todo.id;
 			li.innerHTML = `
 			<span class="content-list-item-symbol">
-				<span class="material-symbols-outlined content-list-item-marker">
+				<span class="material-symbols-outlined content-list-item-marker"
+				id="${todo.id + "-checkbox"}"
+				>
 					${todo.isDone ? "check_box" : "check_box_outline_blank"} </span
 				><span class="content-list-item-title">${todo.title}</span>
 				<span class="content-list-item-details">${todo.snippet}</span>
@@ -146,6 +171,7 @@ var exportedContent = ({ id, when }) => {
 				/></span>
 				<span
 					class="material-symbols-outlined content-list-item-marker remove-task"
+					id="${todo.id + "-delete"}"
 				>
 					delete
 				</span>
@@ -156,13 +182,82 @@ var exportedContent = ({ id, when }) => {
 		let li = document.createElement("li");
 		li.classList.add("content-list-add-item");
 		li.innerHTML = `
-	<button>
+	<button id="${project.id + "-add"}" >
 		<span class="content-list-add-item-text">
 			<span class="material-symbols-outlined"> add_box </span>
 			<span>Add Task</span>
 		</span>
 	</button>
 `;
+		addEventListenerToButton(li.querySelector("button"));
+		function addEventListenerToButton(buttonElement) {
+			buttonElement.addEventListener("click", (e) => {
+				let activeButton = e.target.closest("button");
+				if (!activeButton) return;
+				let id = activeButton.id.endsWith("-add")
+					? activeButton.id.slice(0, -4)
+					: null;
+				if (!id) return;
+				let projectContainer = activeButton.closest(".project-card");
+				let activeButtonListItem = activeButton.closest(
+					".content-list-add-item"
+				);
+				let clonedActiveButtonListItem = activeButtonListItem.cloneNode(true);
+				activeButton.remove();
+
+				let form = document.createElement("form");
+				form.id = id + "-form";
+				form.setAttribute("action", "https://httpbin.org/post");
+				form.setAttribute("method", "post");
+				form.classList.add("form");
+				form.innerHTML = `
+				<div>
+				<label for="title">Title:</label>
+				<input type="text" id="title" name="title" >
+			</div>
+			<div>
+				<label for="details">Details:</label>
+				<textarea id="details" name="details" ></textarea>
+			</div>
+			<div>
+				<label for="priority">Priority:</label>
+				<select id="priority" name="priority" >
+					<option value="high">High</option>
+					<option value="medium">Medium</option>
+					<option value="low">Low</option>
+				</select>
+			</div>
+			<div>
+				<label for="duedate">Due Date:</label>
+				<input type="date" id="duedate" name="duedate" >
+			</div>
+			<div>
+				<input type="submit" value="Submit" class="submit">
+			</div>
+				`;
+				activeButtonListItem.appendChild(form);
+				form.querySelector(".submit").addEventListener("click", submitForm);
+
+				function submitForm(e) {
+					e.preventDefault();
+					activeButtonListItem.remove();
+					projectContainer
+						.querySelector(".content-list")
+						.appendChild(clonedActiveButtonListItem);
+					// Attach the event listener to the cloned button
+					addEventListenerToButton(
+						clonedActiveButtonListItem.querySelector("button")
+					);
+				}
+			});
+		}
+
+		// Attach event listener to the initial button
+		li.addEventListener("click", (e) => {
+			let activeButton = e.target.closest("button");
+			if (!activeButton) return;
+			addEventListenerToButton(activeButton);
+		});
 
 		project.renderButton ? projectList.appendChild(li) : null;
 

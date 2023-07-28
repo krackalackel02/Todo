@@ -215,5 +215,14 @@ const Test1 = new Project(
 		priority: "high",
 	}
 );
+const Test2 = new Project(
+	{ name: "Test 2", symbol: "task_alt" },
+	{
+		title: "Example Task",
+		details: "details",
+		due: today,
+		priority: "high",
+	}
+);
 
-export { Project, Inbox, Test1 };
+export { Project, Inbox, Test1,Test2 };

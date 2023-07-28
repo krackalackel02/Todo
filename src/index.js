@@ -1,5 +1,5 @@
 import navbar from "./navbar";
-import content from "./main";
+import content,{ getListProjects, saveListProjects,clearProjects } from "./main";
 import { Inbox, Project, Test1 } from "./todo";
 
 let navButton = document.querySelector(".page-header-nav-button");
