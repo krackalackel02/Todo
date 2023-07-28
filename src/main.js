@@ -1,24 +1,24 @@
 import { Inbox, Project, Test1 } from "./todo";
+import { renderMain, renderNav } from "./index";
+
 import { format, compareAsc, parseISO, setHours, add } from "date-fns";
 export function getListProjects() {
 	let storedList = JSON.parse(localStorage.getItem("projects"));
 	if (!storedList) return [Inbox, Test1];
 	let newCopy = [];
-	storedList.forEach(({ id, isDefault, name, renderButton, symbol, list }) => {
+	storedList.forEach(({ id, isProject, name, renderButton, symbol, list }) => {
 		newCopy.push(
-			new Project({ id, isDefault, name, renderButton, symbol }, ...list)
+			new Project({ id, isProject, name, renderButton, symbol }, ...list)
 		);
 	});
 	return newCopy;
 }
 
-export function saveListProjects() {
-	let listprojects = getListProjects();
+export function saveListProjects(listprojects) {
 	localStorage.setItem("projects", JSON.stringify(listprojects));
 }
 
 export function clearProjects() {
-	console.log("hello");
 	localStorage.removeItem("projects");
 }
 var exportedContent = ({ id, when }) => {
@@ -62,7 +62,6 @@ var exportedContent = ({ id, when }) => {
 	function projectDue(time) {
 		let newprojects = [];
 		for (const project of listprojects) {
-			console.log(project);
 			switch (time) {
 				case "today":
 					newprojects.push(project.dueToday);
@@ -194,10 +193,10 @@ var exportedContent = ({ id, when }) => {
 			buttonElement.addEventListener("click", (e) => {
 				let activeButton = e.target.closest("button");
 				if (!activeButton) return;
-				let id = activeButton.id.endsWith("-add")
+				let ProjectAddButtonID = activeButton.id.endsWith("-add")
 					? activeButton.id.slice(0, -4)
 					: null;
-				if (!id) return;
+				if (!ProjectAddButtonID) return;
 				let projectContainer = activeButton.closest(".project-card");
 				let activeButtonListItem = activeButton.closest(
 					".content-list-add-item"
@@ -206,40 +205,51 @@ var exportedContent = ({ id, when }) => {
 				activeButton.remove();
 
 				let form = document.createElement("form");
-				form.id = id + "-form";
-				form.setAttribute("action", "https://httpbin.org/post");
-				form.setAttribute("method", "post");
+				form.id = ProjectAddButtonID + "-form";
 				form.classList.add("form");
 				form.innerHTML = `
-				<div>
-				<label for="title">Title:</label>
-				<input type="text" id="title" name="title" >
-			</div>
-			<div>
-				<label for="details">Details:</label>
-				<textarea id="details" name="details" ></textarea>
-			</div>
-			<div>
-				<label for="priority">Priority:</label>
-				<select id="priority" name="priority" >
-					<option value="high">High</option>
-					<option value="medium">Medium</option>
-					<option value="low">Low</option>
-				</select>
-			</div>
-			<div>
-				<label for="duedate">Due Date:</label>
-				<input type="date" id="duedate" name="duedate" >
-			</div>
-			<div>
-				<input type="submit" value="Submit" class="submit">
-			</div>
+					<div>
+						<label for="title" class="required">Title:</label>
+						<input type="text" id="title" name="title" required pattern=".{3,}" placeholder="do laundry">
+					</div>
+					<div>
+						<label for="details">Details:</label>
+						<textarea id="details" name="details" placeholder="optional"></textarea>
+					</div>
+					<div>
+						<label for="priority" class="required">Priority:</label>
+						<select id="priority" name="priority" required>
+							<option value="high">High</option>
+							<option value="medium">Medium</option>
+							<option value="low">Low</option>
+						</select>
+					</div>
+					<div>
+						<label for="duedate" class="required">Due Date:</label>
+						<input type="date" id="duedate" name="duedate" value="" required>
+					</div>
+					<div>
+						<input type="submit" value="Submit">
+					</div>
 				`;
+
 				activeButtonListItem.appendChild(form);
-				form.querySelector(".submit").addEventListener("click", submitForm);
+				form.addEventListener("submit", submitForm);
 
 				function submitForm(e) {
 					e.preventDefault();
+					if (!form.checkValidity()) return;
+					let index = listprojects.findIndex(
+						(project) => project.id === e.target.closest(".project-card").id
+					);
+
+					let title = form.querySelector("#title").value;
+					let details = form.querySelector("#details").value;
+					let due = form.querySelector("#duedate").value;
+					let priority = form.querySelector("#priority").value;
+					listprojects[index].add({ title, details, due, priority });
+					saveListProjects(listprojects);
+					renderMain({ id, when });
 					activeButtonListItem.remove();
 					projectContainer
 						.querySelector(".content-list")

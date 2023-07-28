@@ -53,7 +53,7 @@ projects.innerHTML = `
 `;
 let listprojects = getListProjects();
 for (const project of listprojects) {
-	if(project.isDefault)continue;
+	if(!project.isProject)continue;
 	let navIcon = document.createElement("li");;
 	navIcon.id = project.id
 	navIcon.innerHTML = `

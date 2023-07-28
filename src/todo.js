@@ -11,7 +11,7 @@ import { v4 as uid } from "uuid";
 
 class Project {
 	constructor(
-		{ name, symbol, renderButton = true, isDefault = false, id = uid() },
+		{ name, symbol, renderButton = true, isProject = true, id = uid() },
 		...todos
 	) {
 		Object.assign(this, {
@@ -19,7 +19,7 @@ class Project {
 			symbol,
 			renderButton,
 			id: id,
-			isDefault,
+			isProject,
 			list: [],
 		});
 		for (const todo of todos) {
@@ -94,7 +94,7 @@ class Project {
 				symbol: this.symbol,
 				id: this.symbol,
 				renderButton: true,
-				isDefault: true,
+				isProject: false,
 			},
 			...this.list.filter((todo) => {
 				return parseISO(todo.due).getTime() < currentDate.getTime();
@@ -111,7 +111,7 @@ class Project {
 				symbol: this.symbol,
 				id: this.symbol,
 				renderButton: true,
-				isDefault: true,
+				isProject: false,
 			},
 			...this.list.filter((todo) => {
 				return parseISO(todo.due).getTime() < currentDate.getTime();
@@ -129,7 +129,7 @@ class Project {
 				symbol: this.symbol,
 				id: this.id,
 				renderButton: true,
-				isDefault: true,
+				isProject: false,
 			},
 			...this.list.filter((todo) => {
 				return parseISO(todo.due).getTime() < currentDate.getTime();
@@ -145,7 +145,7 @@ class Project {
 				symbol: this.symbol,
 				id: this.id,
 				renderButton: true,
-				isDefault: true,
+				isProject: false,
 			},
 			...this.list.filter((todo) => {
 				return parseISO(todo.due).getTime() < currentDate.getTime();
@@ -184,7 +184,7 @@ const today = format(new Date(), "yyyy-MM-dd");
 const randomdate = format(add(new Date(), { days: 5 }), "yyyy-MM-dd");
 const randomdate2 = format(add(new Date(), { days: 10 }), "yyyy-MM-dd");
 const Inbox = new Project(
-	{ name: "Inbox", symbol: "inbox", isDefault: true },
+	{ name: "Inbox", symbol: "inbox", isProject: false },
 	{
 		title: "Example Task",
 		details: "details",

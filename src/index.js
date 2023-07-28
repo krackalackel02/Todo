@@ -1,5 +1,9 @@
 import navbar from "./navbar";
-import content,{ getListProjects, saveListProjects,clearProjects } from "./main";
+import content, {
+	getListProjects,
+	saveListProjects,
+	clearProjects,
+} from "./main";
 import { Inbox, Project, Test1 } from "./todo";
 
 let navButton = document.querySelector(".page-header-nav-button");
@@ -13,15 +17,23 @@ function clearChildren(parent) {
 	}
 }
 function renderNav() {
+	let navButton = document.querySelector(".page-header-nav-button");
+	let navContent = document.querySelector(".nav-content");
 	clearChildren(navContent);
 	navContent.appendChild(navbar());
 }
 function renderMain({ id = Inbox.id, when = null } = {}) {
+	let mainContent = document.querySelector(".main-content");
 	clearChildren(mainContent);
 	mainContent.appendChild(content({ id, when }));
 }
 
-renderMain();
+let projects = getListProjects();
+let projectWithIsProjectFalse = projects.find(
+	(project) => project.isProject === false
+);
+let id = projectWithIsProjectFalse.id;
+renderMain({ id, when: null });
 
 navButton.addEventListener("click", () => {
 	if (navContent.getAttribute("aria-expanded") === "true") {
@@ -41,9 +53,15 @@ navContent.addEventListener("click", (e) => {
 	let navclick = e.target.closest(".nav-link-click");
 	if (!navclick) return;
 	let message = navclick.querySelector(".material-symbols-outlined").innerText;
+	let id;
 	switch (message) {
 		case "inbox":
-			renderMain();
+			let projects = getListProjects();
+			let projectWithIsProjectFalse = projects.find(
+				(project) => project.isProject === false
+			);
+			id = projectWithIsProjectFalse.id;
+			renderMain({ id, when: null });
 			break;
 		case "warning":
 			renderMain({ id: null, when: "overdue" });
@@ -58,7 +76,7 @@ navContent.addEventListener("click", (e) => {
 			renderMain({ id: null, when: "month" });
 			break;
 		case "task_alt":
-			let id = navclick.parentElement.id;
+			id = navclick.parentElement.id;
 			renderMain({ id, when: null });
 			break;
 
@@ -66,3 +84,4 @@ navContent.addEventListener("click", (e) => {
 			break;
 	}
 });
+export { renderMain, renderNav };
