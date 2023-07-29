@@ -46,7 +46,7 @@ var exportedContent = ({ id, when }) => {
 		<button id="deleteButton" >
 			<span class="content-list-add-item-text">
 				<span class="material-symbols-outlined"> delete </span
-				><span>Load Default Projects</span>
+				><span>Clear & Load Default Projects</span>
 			</span>
 		</button>
 	`;
@@ -148,12 +148,52 @@ var exportedContent = ({ id, when }) => {
 		projectTemplate.classList.add("project-card");
 		projectTemplate.id = project.id;
 		let projectHeader = document.createElement("h1");
+		projectHeader.classList.add("project-header");
 		projectHeader.innerHTML = `
 		<span class="content-header">
 			<span class="material-symbols-outlined"> ${project.symbol} </span>
 			<span>${project.name}</span>
 		</span>
 	`;
+		let deleteProjectButton = document.createElement("span");
+		function deleteProject(e) {
+			let activeButton = e.target;
+			if (!activeButton.classList.contains("remove-project")) return;
+			let PROJECT = activeButton.closest(".project-card");
+			if (project.isDefault) return;
+			let index = listprojects.findIndex(
+				(project) => project.id === PROJECT.id
+			);
+			listprojects.splice(index, 1);
+
+			saveListProjects(listprojects);
+			if (!when) {
+				let id = projectWithIsProjectFalse.id;
+				renderNav();
+				renderMain({ id, when: null });
+			} else {
+				renderNav();
+				renderMain({ id, when });
+			}
+		}
+
+		deleteProjectButton.addEventListener("click", deleteProject);
+		project.isProject
+			? (deleteProjectButton.innerHTML = `
+	<span
+					class="material-symbols-outlined content-list-item-marker remove-project"
+					id="${project.id + "-delete"}"
+				>
+					delete
+				</span>
+	`)
+			: (deleteProjectButton.innerHTML = `
+	<span class="remove-project"
+				>
+					Default
+				</span>
+	`);
+		projectHeader.appendChild(deleteProjectButton);
 		projectTemplate.appendChild(projectHeader);
 		let projectList = document.createElement("ul");
 		projectList.classList.add("content-list");
@@ -219,14 +259,11 @@ var exportedContent = ({ id, when }) => {
 				let indexTask = listprojects[indexProject].list.findIndex(
 					(task) => task.id === taskId
 				);
-				console.log(listprojects[indexProject].list[3].id);
-				console.log(taskId);
 				listprojects[indexProject].list[indexTask].isDone = listprojects[
 					indexProject
 				].list[indexTask].isDone
 					? false
 					: true;
-				console.log(listprojects[indexProject].list[indexTask].isDone);
 				saveListProjects(listprojects);
 				renderMain({ id, when });
 			}

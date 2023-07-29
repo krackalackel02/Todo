@@ -216,6 +216,37 @@ header svg:hover {
 	border-radius: 10px;
 	background-color: #d2d2d2;
 }
+.project-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	border-radius: 5px;
+	padding: 10px;
+}
+.nav-link {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	border-radius: 5px;
+	padding: 5px;
+}
+.remove-project{
+	opacity: 0;
+}
+.project-header:hover {
+	background-color: #cdcdcd;
+}
+.nav-link:hover {
+	background-color: #cdcdcd;
+}
+.project-header:hover .remove-project{
+	opacity: 1;
+	transition: 300ms;
+}
+.nav-link:hover .remove-project{
+	opacity: 1;
+	transition: 300ms;
+}
 /* FOOTER */
 
 #page-footer {

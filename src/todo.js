@@ -105,7 +105,7 @@ class Project {
 				symbol: this.symbol,
 				id: this.symbol,
 				renderButton: true,
-				isProject: false,
+				isProject: this.isProject,
 			},
 			...this.list.filter((todo) => {
 				return (
@@ -125,7 +125,7 @@ class Project {
 				symbol: this.symbol,
 				id: this.symbol,
 				renderButton: true,
-				isProject: false,
+				isProject: this.isProject,
 			},
 			...this.list.filter((todo) => {
 				return (
@@ -146,7 +146,7 @@ class Project {
 				symbol: this.symbol,
 				id: this.id,
 				renderButton: true,
-				isProject: false,
+				isProject: this.isProject,
 			},
 			...this.list.filter((todo) => {
 				return (
@@ -165,7 +165,7 @@ class Project {
 				symbol: this.symbol,
 				id: this.id,
 				renderButton: true,
-				isProject: false,
+				isProject: this.isProject,
 			},
 			...this.list.filter((todo) => {
 				return (
