@@ -45,7 +45,7 @@ navButton.addEventListener("click", () => {
 });
 
 pageTitle.addEventListener("click", () => {
-	renderMain();
+	renderMain({ id, when: null });
 });
 
 navContent.addEventListener("click", (e) => {
