@@ -32,7 +32,7 @@ var exportedContent = ({ id, when }) => {
 		<button id="deleteButton" >
 			<span class="content-list-add-item-text">
 				<span class="material-symbols-outlined"> delete </span
-				><span>Clear Projects</span>
+				><span>Load Default Projects</span>
 			</span>
 		</button>
 		<button id="saveButton" >
@@ -42,15 +42,25 @@ var exportedContent = ({ id, when }) => {
 			</span>
 		</button>
 	`;
+	buttons.innerHTML = `
+		<button id="deleteButton" >
+			<span class="content-list-add-item-text">
+				<span class="material-symbols-outlined"> delete </span
+				><span>Load Default Projects</span>
+			</span>
+		</button>
+	`;
 	buttons.addEventListener("click", (e) => {
 		let activeButton = e.target.closest("button");
 		if (!activeButton) return;
 		switch (activeButton.id) {
 			case "deleteButton":
 				clearProjects();
+				renderMain({ id, when });
 				break;
 			case "saveButton":
-				saveListProjects();
+				saveListProjects(listprojects);
+				renderMain({ id, when });
 				break;
 			default:
 				break;
@@ -153,7 +163,7 @@ var exportedContent = ({ id, when }) => {
 			li.id = todo.id;
 			li.innerHTML = `
 			<span class="content-list-item-symbol">
-				<span class="material-symbols-outlined content-list-item-marker"
+				<span class="material-symbols-outlined content-list-item-marker check-task"
 				id="${todo.id + "-checkbox"}"
 				>
 					${todo.isDone ? "check_box" : "check_box_outline_blank"} </span
@@ -176,6 +186,81 @@ var exportedContent = ({ id, when }) => {
 				</span>
 			</span>
 		`;
+			function deleteTask(e) {
+				let projectID = e.target.closest(".project-card").id;
+				let indexProject = listprojects.findIndex(
+					(project) => project.id === projectID
+				);
+
+				let taskId = e.target.id.endsWith("-delete")
+					? e.target.id.slice(0, -7)
+					: null;
+				if (!taskId) return;
+
+				let indexTask = listprojects[indexProject].list.findIndex(
+					(task) => task.id === taskId
+				);
+				listprojects[indexProject].list.splice(indexTask, 1);
+
+				saveListProjects(listprojects);
+				renderMain({ id, when });
+			}
+			function checkTask(e) {
+				let projectID = e.target.closest(".project-card").id;
+				let indexProject = listprojects.findIndex(
+					(project) => project.id === projectID
+				);
+
+				let taskId = e.target.id.endsWith("-checkbox")
+					? e.target.id.slice(0, -9)
+					: null;
+				if (!taskId) return;
+
+				let indexTask = listprojects[indexProject].list.findIndex(
+					(task) => task.id === taskId
+				);
+				console.log(listprojects[indexProject].list[indexTask].isDone);
+				listprojects[indexProject].list[indexTask].isDone = listprojects[
+					indexProject
+				].list[indexTask].isDone
+					? false
+					: true;
+				console.log(listprojects[indexProject].list[indexTask].isDone);
+				saveListProjects(listprojects);
+				renderMain({ id, when });
+			}
+
+			let deleteButton = li.getElementsByClassName(`remove-task`)[0];
+			deleteButton.addEventListener("click", deleteTask);
+			let checkButton = li.getElementsByClassName(`check-task`)[0];
+			checkButton.addEventListener("click", checkTask);
+			projectList.appendChild(li);
+		}
+		if (project.list.length <= 0) {
+			let li = document.createElement("li");
+			li.classList.add("content-list-add-item");
+			let whenMessage = "due this ";
+			let isComplete = " incomplete";
+			switch (when) {
+				case "today":
+
+				case "week":
+
+				case "month":
+					whenMessage += when;
+					break;
+				case "overdue":
+					whenMessage = when;
+					break;
+
+				default:
+					whenMessage = "currently";
+					isComplete = "";
+					break;
+			}
+			li.innerHTML = `
+<span> ${project.name} has no${isComplete} tasks ${whenMessage}</span>
+`;
 			projectList.appendChild(li);
 		}
 		let li = document.createElement("li");
@@ -188,8 +273,8 @@ var exportedContent = ({ id, when }) => {
 		</span>
 	</button>
 `;
-		addEventListenerToButton(li.querySelector("button"));
-		function addEventListenerToButton(buttonElement) {
+		addEventListenerToAddTaskButton(li.querySelector("button"));
+		function addEventListenerToAddTaskButton(buttonElement) {
 			buttonElement.addEventListener("click", (e) => {
 				let activeButton = e.target.closest("button");
 				if (!activeButton) return;
@@ -229,14 +314,14 @@ var exportedContent = ({ id, when }) => {
 						<input type="date" id="duedate" name="duedate" value="" required>
 					</div>
 					<div>
-						<input type="submit" value="Submit">
+						<input type="submit" value="Create Task">
 					</div>
 				`;
 
 				activeButtonListItem.appendChild(form);
-				form.addEventListener("submit", submitForm);
+				form.addEventListener("submit", submitTaskForm);
 
-				function submitForm(e) {
+				function submitTaskForm(e) {
 					e.preventDefault();
 					if (!form.checkValidity()) return;
 					let index = listprojects.findIndex(
@@ -255,7 +340,7 @@ var exportedContent = ({ id, when }) => {
 						.querySelector(".content-list")
 						.appendChild(clonedActiveButtonListItem);
 					// Attach the event listener to the cloned button
-					addEventListenerToButton(
+					addEventListenerToAddTaskButton(
 						clonedActiveButtonListItem.querySelector("button")
 					);
 				}
@@ -266,7 +351,7 @@ var exportedContent = ({ id, when }) => {
 		li.addEventListener("click", (e) => {
 			let activeButton = e.target.closest("button");
 			if (!activeButton) return;
-			addEventListenerToButton(activeButton);
+			addEventListenerToAddTaskButton(activeButton);
 		});
 
 		project.renderButton ? projectList.appendChild(li) : null;
@@ -274,6 +359,58 @@ var exportedContent = ({ id, when }) => {
 		projectTemplate.appendChild(projectList);
 		content.appendChild(projectTemplate);
 	}
+	let button = document.createElement("button");
+	button.classList.add("add-project");
+	button.innerHTML = `
+	<span class="content-list-add-item-text">
+		<span class="material-symbols-outlined"> add_box </span>
+		<span>New Project</span>
+	</span>
+`;
+	function addEventListenerToAddProjectButton(buttonElement) {
+		buttonElement.addEventListener("click", (e) => {
+			let activeButton = e.target.closest("button");
+			if (!activeButton) return;
+
+			let clonedActiveButtonListItem = activeButton.cloneNode(true);
+			activeButton.remove();
+
+			let form = document.createElement("form");
+			form.classList.add("form");
+			form.innerHTML = `
+			<div>
+				<label for="name" class="required">Project Name:</label>
+				<input type="text" id="name" name="name" required pattern=".{3,}" placeholder="School Work">
+			</div>
+			<div>
+				<input type="submit" value="Create Project">
+			</div>
+		`;
+
+			content.appendChild(form);
+			form.addEventListener("submit", submitProjectForm);
+
+			function submitProjectForm(e) {
+				e.preventDefault();
+				if (!form.checkValidity()) return;
+
+				let name = form.querySelector("#name").value;
+				listprojects.push(new Project({ name }));
+				saveListProjects(listprojects);
+				renderNav();
+				renderMain({
+					id: listprojects[listprojects.length - 1].id,
+					when: null,
+				});
+				form.remove();
+				content.appendChild(clonedActiveButtonListItem);
+				// Attach the event listener to the cloned button
+				addEventListenerToAddProjectButton(clonedActiveButtonListItem);
+			}
+		});
+	}
+	addEventListenerToAddProjectButton(button);
+	content.appendChild(button);
 	return content;
 };
 export default exportedContent;

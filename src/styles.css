@@ -48,11 +48,13 @@ header svg {
 }
 .page-header-nav-button,
 header h1,
+.add-project:hover,
 header svg {
 	transition: transform 300ms;
 }
 .page-header-nav-button:hover,
 header h1:hover,
+.add-project:hover,
 header svg:hover {
 	transform: scale(1.1);
 	cursor: pointer;
@@ -141,11 +143,11 @@ header svg:hover {
 .content-list-add-item.delete-save-button {
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
+	justify-content: center;
 }
 .content-list-add-item button {
 	font-size: 1.5rem;
-	padding:5px 10px;
+	padding: 5px 10px;
 	border-radius: 10px;
 	background-color: #d2d2d2;
 }
@@ -203,12 +205,17 @@ header svg:hover {
 	.material-symbols-outlined.content-list-item-marker.remove-task {
 	opacity: 1;
 }
-.main-title{
+.main-title {
 	text-align: center;
 	text-decoration: underline;
 	font-size: 3rem;
 }
-
+.add-project {
+	font-size: 2rem;
+	padding: 5px 10px;
+	border-radius: 10px;
+	background-color: #d2d2d2;
+}
 /* FOOTER */
 
 #page-footer {

@@ -17,7 +17,6 @@ function clearChildren(parent) {
 	}
 }
 function renderNav() {
-	let navButton = document.querySelector(".page-header-nav-button");
 	let navContent = document.querySelector(".nav-content");
 	clearChildren(navContent);
 	navContent.appendChild(navbar());

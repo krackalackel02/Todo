@@ -1,9 +1,10 @@
-import { getListProjects, saveListProjects } from "./main";
+import exportedContent, { getListProjects, saveListProjects } from "./main";
 import { Inbox, Project, Test1 } from "./todo";
-let content = document.createElement("div");
-content.classList.add("navbar");
-let list = document.createElement("ul");
-list.innerHTML = `
+function exportedNavContent() {
+	let content = document.createElement("div");
+	content.classList.add("navbar");
+	let list = document.createElement("ul");
+	list.innerHTML = `
 		<li>
 			<h3>Important:</h3>
 			<ul>
@@ -46,27 +47,30 @@ list.innerHTML = `
 		</li>
 		
 `;
-let projects = document.createElement("li");
-let projectsList = document.createElement("ul");
-projects.innerHTML = `
+	let projects = document.createElement("li");
+	let projectsList = document.createElement("ul");
+	projects.innerHTML = `
 		<h3>Projects:</h3>
 `;
-let listprojects = getListProjects();
-for (const project of listprojects) {
-	if(!project.isProject)continue;
-	let navIcon = document.createElement("li");;
-	navIcon.id = project.id
-	navIcon.innerHTML = `
+	let listprojects = getListProjects();
+	for (const project of listprojects) {
+		console.log(project.name);
+		if (!project.isProject) continue;
+		let navIcon = document.createElement("li");
+		navIcon.id = project.id;
+		navIcon.innerHTML = `
 	<span class="nav-link-click">
 				<span class="material-symbols-outlined"> task_alt </span
 				><span>${project.name}</span>
 			</span>
 	`;
-	projectsList.appendChild(navIcon);
+		projectsList.appendChild(navIcon);
+	}
+
+	projects.appendChild(projectsList);
+	list.appendChild(projects);
+	content.appendChild(list);
+	return content;
 }
 
-projects.appendChild(projectsList);
-list.appendChild(projects);
-content.appendChild(list);
-
-export default () => content;
+export default exportedNavContent;

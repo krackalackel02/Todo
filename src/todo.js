@@ -11,7 +11,7 @@ import { v4 as uid } from "uuid";
 
 class Project {
 	constructor(
-		{ name, symbol, renderButton = true, isProject = true, id = uid() },
+		{ name, symbol = "task_alt", renderButton = true, isProject = true, id = uid() },
 		...todos
 	) {
 		Object.assign(this, {
@@ -97,7 +97,10 @@ class Project {
 				isProject: false,
 			},
 			...this.list.filter((todo) => {
-				return parseISO(todo.due).getTime() < currentDate.getTime();
+				return (
+					parseISO(todo.due).getTime() < currentDate.getTime() &&
+					todo.isDone != true
+				);
 			})
 		);
 	}
@@ -114,14 +117,17 @@ class Project {
 				isProject: false,
 			},
 			...this.list.filter((todo) => {
-				return parseISO(todo.due).getTime() < currentDate.getTime();
+				return (
+					parseISO(todo.due).getTime() < currentDate.getTime() &&
+					todo.isDone != true
+				);
 			})
 		);
 	}
 
 	get dueThisMonth() {
 		let currentDate = Project.tonight();
-		currentDate = add(endOfMonth(currentDate), { days: 1 });
+		currentDate = add(currentDate, { days: 31 })
 
 		return new Project(
 			{
@@ -132,7 +138,10 @@ class Project {
 				isProject: false,
 			},
 			...this.list.filter((todo) => {
-				return parseISO(todo.due).getTime() < currentDate.getTime();
+				return (
+					parseISO(todo.due).getTime() < currentDate.getTime() &&
+					todo.isDone != true
+				);
 			})
 		);
 	}
@@ -148,20 +157,23 @@ class Project {
 				isProject: false,
 			},
 			...this.list.filter((todo) => {
-				return parseISO(todo.due).getTime() < currentDate.getTime();
+				return (
+					parseISO(todo.due).getTime() < currentDate.getTime() &&
+					todo.isDone != true
+				);
 			})
 		);
 	}
 
 	Todo = class {
-		constructor({ title, details, due, priority }) {
+		constructor({ title, details, due, priority, isDone = false }) {
 			Object.assign(this, {
 				title,
 				details,
 				due,
 				id: uid(),
 				priority,
-				isDone: false,
+				isDone,
 			});
 		}
 
@@ -225,4 +237,4 @@ const Test2 = new Project(
 	}
 );
 
-export { Project, Inbox, Test1,Test2 };
+export { Project, Inbox, Test1, Test2 };
