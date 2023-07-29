@@ -1,4 +1,5 @@
 import exportedContent, { getListProjects, saveListProjects } from "./main";
+import { renderNav, renderMain } from "./index";
 import { Inbox, Project, Test1 } from "./todo";
 function exportedNavContent() {
 	let content = document.createElement("div");
@@ -96,18 +97,25 @@ function exportedNavContent() {
 			if (!projectID) return;
 			let index = listprojects.findIndex((project) => project.id === projectID);
 			listprojects.splice(index, 1);
-			console.log(listprojects);
-			// saveListProjects(listprojects);
-			if (!when) {
-				let projectWithIsProjectFalse = listprojects.find(
-					(project) => project.isProject === false
-				);
-				let id = projectWithIsProjectFalse.id;
-				renderNav();
-				renderMain({ id, when: null });
-			} else {
+			saveListProjects(listprojects);
+			let when = document.querySelector(".main").getAttribute("when");
+			let id = document.querySelector(".main").getAttribute("projectid");
+			if (when) {
 				renderNav();
 				renderMain({ id, when });
+			} else {
+				let listprojects = getListProjects();
+				if (id) {
+					renderNav();
+					renderMain({ id, when });
+				} else {
+					let projectWithIsProjectFalse = listprojects.find(
+						(project) => project.isProject === false
+					);
+					id = projectWithIsProjectFalse.id;
+					renderNav();
+					renderMain({ id, when });
+				}
 			}
 		}
 

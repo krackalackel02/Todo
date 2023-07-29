@@ -28,22 +28,16 @@ class Project {
 			isProject,
 			list: [],
 		});
-		for (const todo of todos) {
-			this.add(todo);
-		}
+		this.add(...todos);
 	}
 
-	add({ title, details, due, priority, isDone, id }) {
-		const newTodo = new this.Todo({
-			title,
-			details,
-			due,
-			priority,
-			isDone,
-			id,
-		});
-		if (!id) newTodo.createDate = new Date();
-		this.list.push(newTodo);
+	add(...todos) {
+		for (const todo of todos) {
+			 todo;
+			const newTodo = new this.Todo(todo);
+			if (!todo.id) newTodo.createDate = new Date();
+			this.list.push(newTodo);
+		}
 	}
 
 	sortByCriteria(...criteriaFunctions) {
@@ -103,7 +97,7 @@ class Project {
 			{
 				name: this.name,
 				symbol: this.symbol,
-				id: this.symbol,
+				id: this.id,
 				renderButton: true,
 				isProject: this.isProject,
 			},
@@ -123,7 +117,7 @@ class Project {
 			{
 				name: this.name,
 				symbol: this.symbol,
-				id: this.symbol,
+				id: this.id,
 				renderButton: true,
 				isProject: this.isProject,
 			},

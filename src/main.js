@@ -56,6 +56,7 @@ var exportedContent = ({ id, when }) => {
 		switch (activeButton.id) {
 			case "deleteButton":
 				clearProjects();
+				renderNav();
 				renderMain({ id, when });
 				break;
 			case "saveButton":
@@ -365,7 +366,6 @@ var exportedContent = ({ id, when }) => {
 					let index = listprojects.findIndex(
 						(project) => project.id === e.target.closest(".project-card").id
 					);
-
 					let title = form.querySelector("#title").value;
 					let details = form.querySelector("#details").value;
 					let due = form.querySelector("#duedate").value;
@@ -449,6 +449,13 @@ var exportedContent = ({ id, when }) => {
 	}
 	addEventListenerToAddProjectButton(button);
 	content.appendChild(button);
+	if (!when) {
+		content.removeAttribute("when");
+		content.setAttribute("projectid", id);
+	} else {
+		content.removeAttribute("projectid");
+		content.setAttribute("when", when);
+	}
 	return content;
 };
 export default exportedContent;

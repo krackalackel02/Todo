@@ -26,10 +26,8 @@ function renderMain({ id = Inbox.id, when = null } = {}) {
 	clearChildren(mainContent);
 	mainContent.appendChild(content({ id, when }));
 }
-// clearProjects()
+
 let projects = getListProjects();
-// saveListProjects(projects)
-console.log(projects);
 let projectWithIsProjectFalse = projects.find(
 	(project) => project.isProject === false
 );
