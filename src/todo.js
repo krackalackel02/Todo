@@ -11,7 +11,13 @@ import { v4 as uid } from "uuid";
 
 class Project {
 	constructor(
-		{ name, symbol = "task_alt", renderButton = true, isProject = true, id = uid() },
+		{
+			name,
+			symbol = "task_alt",
+			renderButton = true,
+			isProject = true,
+			id = uid(),
+		},
 		...todos
 	) {
 		Object.assign(this, {
@@ -27,12 +33,17 @@ class Project {
 		}
 	}
 
-	add(...todos) {
-		for (const todoData of todos) {
-			const newTodo = new this.Todo(todoData);
-			newTodo.createDate = new Date();
-			this.list.push(newTodo);
-		}
+	add({ title, details, due, priority, isDone, id }) {
+		const newTodo = new this.Todo({
+			title,
+			details,
+			due,
+			priority,
+			isDone,
+			id,
+		});
+		if (!id) newTodo.createDate = new Date();
+		this.list.push(newTodo);
 	}
 
 	sortByCriteria(...criteriaFunctions) {
@@ -127,7 +138,7 @@ class Project {
 
 	get dueThisMonth() {
 		let currentDate = Project.tonight();
-		currentDate = add(currentDate, { days: 31 })
+		currentDate = add(currentDate, { days: 31 });
 
 		return new Project(
 			{
@@ -166,12 +177,12 @@ class Project {
 	}
 
 	Todo = class {
-		constructor({ title, details, due, priority, isDone = false }) {
+		constructor({ title, details, due, priority, isDone = false, id = uid() }) {
 			Object.assign(this, {
 				title,
 				details,
 				due,
-				id: uid(),
+				id: id,
 				priority,
 				isDone,
 			});

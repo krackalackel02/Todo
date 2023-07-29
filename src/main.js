@@ -219,7 +219,8 @@ var exportedContent = ({ id, when }) => {
 				let indexTask = listprojects[indexProject].list.findIndex(
 					(task) => task.id === taskId
 				);
-				console.log(listprojects[indexProject].list[indexTask].isDone);
+				console.log(listprojects[indexProject].list[3].id);
+				console.log(taskId);
 				listprojects[indexProject].list[indexTask].isDone = listprojects[
 					indexProject
 				].list[indexTask].isDone
